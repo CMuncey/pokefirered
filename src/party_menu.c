@@ -4639,19 +4639,12 @@ static void TryUsePPItemOutsideBattle(u8 taskId)
                                             gSpecialVar_ItemId,
                                             gPartyMenu.slotId,
                                             gPartyMenu.ppMoveSlot);
+
     PlaySE(SE_SELECT);
-    if (noEffect)
-    {
-        gPartyMenuUseExitCallback = FALSE;
-        DisplayPartyMenuMessage(gText_WontHaveEffect, TRUE);
-        ScheduleBgCopyTilemapToVram(2);
-        gTasks[taskId].func = Task_ClosePartyMenuAfterText;
-    }
-    else
-    {
-        Task_DoUseItemAnim(taskId);
-        gItemUseCB = ItemUseCB_RestorePP;
-    }
+    gPartyMenuUseExitCallback = FALSE;
+    DisplayPartyMenuMessage(gText_WontHaveEffect, TRUE);
+    ScheduleBgCopyTilemapToVram(2);
+    gTasks[taskId].func = Task_ClosePartyMenuAfterText;
 }
 
 static void ItemUseCB_RestorePP(u8 taskId, TaskFunc func)
@@ -4659,17 +4652,7 @@ static void ItemUseCB_RestorePP(u8 taskId, TaskFunc func)
     u16 move;
     struct Pokemon *mon = &gPlayerParty[gPartyMenu.slotId];
 
-    ExecuteTableBasedItemEffect_(gPartyMenu.slotId, gSpecialVar_ItemId, (u8)gPartyMenu.ppMoveSlot);
-    gPartyMenuUseExitCallback = TRUE;
-    ItemUse_SetQuestLogEvent(QL_EVENT_USED_ITEM, mon, gSpecialVar_ItemId, 0xFFFF);
-    PlaySE(SE_USE_ITEM);
-    RemoveBagItem(gSpecialVar_ItemId, 1);
-    move = GetMonData(mon, gPartyMenu.ppMoveSlot + MON_DATA_MOVE1);
-    StringCopy(gStringVar1, gMoveNames[move]);
-    GetMedicineItemEffectMessage(gSpecialVar_ItemId);
-    DisplayPartyMenuMessage(gStringVar4, 1);
-    ScheduleBgCopyTilemapToVram(2);
-    gTasks[taskId].func = Task_ClosePartyMenuAfterText;
+    return;
 }
 
 static void TryUsePPItemInBattle(u8 taskId)
@@ -4680,28 +4663,11 @@ static void TryUsePPItemInBattle(u8 taskId)
     struct PartyMenu *ptr = &gPartyMenu;
     struct Pokemon *mon;
 
-    if (ExecuteTableBasedItemEffect_(ptr->slotId, item, *moveSlot))
-    {
-        gPartyMenuUseExitCallback = FALSE;
-        PlaySE(SE_SELECT);
-        DisplayPartyMenuMessage(gText_WontHaveEffect, TRUE);
-        ScheduleBgCopyTilemapToVram(2);
-        gTasks[taskId].func = Task_ClosePartyMenuAfterText;
-    }
-    else
-    {
-        gPartyMenuUseExitCallback = TRUE;
-        mon = &gPlayerParty[ptr->slotId];
-        ItemUse_SetQuestLogEvent(QL_EVENT_USED_ITEM, mon, item, 0xFFFF);
-        PlaySE(SE_USE_ITEM);
-        RemoveBagItem(item, 1);
-        move = GetMonData(mon, MON_DATA_MOVE1 + *moveSlot);
-        StringCopy(gStringVar1, gMoveNames[move]);
-        GetMedicineItemEffectMessage(item);
-        DisplayPartyMenuMessage(gStringVar4, TRUE);
-        ScheduleBgCopyTilemapToVram(2);
-        gTasks[taskId].func = Task_ClosePartyMenuAfterText;
-    }
+    gPartyMenuUseExitCallback = FALSE;
+    PlaySE(SE_SELECT);
+    DisplayPartyMenuMessage(gText_WontHaveEffect, TRUE);
+    ScheduleBgCopyTilemapToVram(2);
+    gTasks[taskId].func = Task_ClosePartyMenuAfterText;
 }
 
 #undef ppMoveSlot
