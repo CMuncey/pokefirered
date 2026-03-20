@@ -2591,14 +2591,7 @@ u8 ItemBattleEffects(u8 caseID, u8 battlerId, bool8 moveTurn)
                     }
                     if (i != MAX_MON_MOVES)
                     {
-                        u8 maxPP = CalculatePPWithBonus(move, ppBonuses, i);
-                        if (changedPP + battlerHoldEffectParam > maxPP)
-                            changedPP = maxPP;
-                        else
-                            changedPP = changedPP + battlerHoldEffectParam;
-
                         PREPARE_MOVE_BUFFER(gBattleTextBuff1, move);
-
                         BattleScriptExecute(BattleScript_BerryPPHealEnd2);
                         BtlController_EmitSetMonData(BUFFER_A, i + REQUEST_PPMOVE1_BATTLE, 0, 1, &changedPP);
                         MarkBattlerForControllerExec(gActiveBattler);
